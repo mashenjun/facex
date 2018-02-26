@@ -31,7 +31,7 @@ func TestFaceXSearch(t *testing.T) {
 
 	assertion.False(result.IsOK())
 
-	result, err = facex.Search(testFace("./face2.png"))
+	result, err = facex.Search(testFace("./face2.jpg"))
 	assertion.Nil(err)
 	assertion.NotNil(result)
 
@@ -63,6 +63,14 @@ func TestFaceXRemoveGroup(t *testing.T) {
 
 	err := facex.RemoveGroup()
 	assertion.Nil(err)
+}
+
+func TestFaceXListGroup(t *testing.T) {
+	var assertion = assert.New(t)
+	var facex *Facex = testClient()
+	var _, err = facex.ListGroup()
+	assertion.Nil(err)
+
 }
 
 func testClient() *Facex {
