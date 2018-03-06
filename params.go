@@ -55,6 +55,22 @@ type SearchResultValue struct {
 	Score float64 `json:"score"`
 }
 
+type ListGroupResult struct {
+	Code 	int 		`json:"code"`
+	Message string 		`json:"message"`
+	Result 	[]*ListGroupItem `json:"result"`
+}
+
+type ListGroupItem struct{
+	Id		string				`json:"id"`
+	Value	*ListGroupItemValue	`json:"value"`
+}
+
+type ListGroupItemValue struct{
+	Name	string	`json:"name"`
+}
+
+
 func NewSearchResult(data []byte) (*SearchResult, error) {
 	var ret SearchResult
 
@@ -66,8 +82,19 @@ func NewSearchResult(data []byte) (*SearchResult, error) {
 	return &ret, nil
 }
 
+func NewListGroupResult(data []byte) (*ListGroupResult, error){
+	var ret ListGroupResult
+
+	err := json.Unmarshal(data, &ret)
+	if err != nil {
+		return nil, err
+	}
+
+	return &ret, nil
+}
+
 func (this *SearchResult) IsOK(threshold ...float64) bool {
-	tv := 0.65 // a experience value
+	tv := 0.50 // a experience value
 	if len(threshold) > 0 {
 		tv = threshold[0]
 	}

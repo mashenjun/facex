@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/songjiayang/qclient"
+	"qiniupkg.com/x/log.v7"
 )
 
 type Facex struct {
@@ -31,6 +32,7 @@ const (
 	groupAddAPI    = "/v1/face/group/%s/add"
 	groupDeleteAPI = "/v1/face/group/%s/delete"
 	groupSearchAPI = "/v1/face/group/%s/search"
+	groupListAPI   = "/v1/face/group/%s/"
 
 	mimeType = "application/json"
 )
@@ -39,8 +41,10 @@ func (facex *Facex) API(api string) string {
 	return fmt.Sprintf(strings.TrimSuffix(facex.Endpoint, "/")+api, facex.GroupId)
 }
 
+
 func (facex *Facex) NewGroup(input FacexInput) (err error) {
-	_, err = facex.Send(http.MethodPost, facex.API(groupNewAPI), mimeType, facex.timeout, toPayload(input))
+	data, err := facex.Send(http.MethodPost, facex.API(groupNewAPI), mimeType, facex.timeout, toPayload(input))
+	log.Println(data)
 	return
 }
 
@@ -80,7 +84,19 @@ func (facex *Facex) Search(uri string) (result *SearchResult, err error) {
 	if err != nil {
 		return
 	}
-
 	result, err = NewSearchResult(data)
 	return
+	return
+}
+
+func (facex *Facex) ListGroup() (result *ListGroupResult, err error) {
+	data, err := facex.Send(http.MethodGet, facex.API(groupListAPI), mimeType, facex.timeout, nil)
+	log.Println(facex.API(groupListAPI))
+	log.Println(data)
+	if err 	!= nil {
+		return
+	}
+	result, err = NewListGroupResult(data)
+	return
+
 }
